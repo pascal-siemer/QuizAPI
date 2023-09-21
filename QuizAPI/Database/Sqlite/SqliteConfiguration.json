@@ -1,0 +1,4 @@
+{
+  "ConnectionString": "Data Source=/Users/pascal-siemer/Database/Sqlite/database.db",
+  "Schema": "main"
+}
