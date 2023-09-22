@@ -1,11 +1,10 @@
-using System.Text;
-using RestService.Configurations;
-using RestService.Data;
-using RestService.DatabaseDriver;
-using RestService.DataMapper;
-using RestService.Endpoint.Arguments;
+using QuizAPI.Arguments;
+using QuizAPI.Configurations;
+using QuizAPI.Data;
+using QuizAPI.DatabaseDriver;
+using QuizAPI.DataMapper;
 
-namespace RestService.Queries;
+namespace QuizAPI.Queries;
 
 public class GetAllUsersQuery : IQuery<NoArguments, User[]>
 {
@@ -30,7 +29,7 @@ public class GetAllUsersQuery : IQuery<NoArguments, User[]>
     {
         var users = new List<User>();
 
-        await foreach (var user in _driver.Read(_query, _mapper))
+        await foreach (var user in _driver.Read(_query, null, _mapper))
         {
             users.Add(user);
         }

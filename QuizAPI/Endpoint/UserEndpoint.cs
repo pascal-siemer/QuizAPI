@@ -1,33 +1,18 @@
 ﻿using System.Text;
-using RestService.Data;
-using RestService.DatabaseDriver;
-using RestService.DataMapper;
-using RestService.Endpoint.Arguments;
-using RestService.Extensions;
-using RestService.Queries;
+using QuizAPI.Arguments;
+using QuizAPI.Data;
+using QuizAPI.Queries;
 
-namespace RestService.Endpoint;
+namespace QuizAPI.Endpoint;
 
-public class UserEndpoint : IAsyncEndpoint<NoArguments, User[]>, IAsyncEndpoint<User, bool>
+public class UserEndpoint : IAsyncEndpoint<NoArguments, User[]>
 {
-    private readonly GetAllUsersQuery _usersQuery;
-    private readonly AuthenticationQuery _authQuery;
-
-    public UserEndpoint(GetAllUsersQuery usersQuery, AuthenticationQuery authQuery)
-    {
-        _usersQuery = usersQuery;
-        _authQuery = authQuery;
-    }
-
-    public Task<User[]> GetAsync() => _usersQuery.Execute();
+    private readonly GetAllUsersQuery _query;
     
-    public Task<User[]> GetAsync(NoArguments arguments)
+    public UserEndpoint(GetAllUsersQuery query)
     {
-        throw new NotImplementedException();
+        _query = query;
     }
 
-    public Task<bool> GetAsync(User arguments)
-    {
-        _authQuery.Execute(arguments);
-    }
+    public Task<User[]> GetAsync(NoArguments arguments) => _query.Execute(arguments);
 }

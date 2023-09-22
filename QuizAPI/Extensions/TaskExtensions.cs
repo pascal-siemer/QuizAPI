@@ -1,4 +1,4 @@
-﻿namespace RestService.Extensions;
+﻿namespace QuizAPI.Extensions;
 
 public static class TaskExtensions
 {

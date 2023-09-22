@@ -1,4 +1,4 @@
-namespace RestService.Queries;
+namespace QuizAPI.Queries;
 
 public interface IQuery<TResult>
 {

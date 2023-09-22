@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace RestService.DataMapper;
+namespace QuizAPI.DataMapper;
 
 public interface IDataMapper<T>
 {

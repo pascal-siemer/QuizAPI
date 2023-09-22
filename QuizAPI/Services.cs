@@ -1,44 +1,29 @@
 ﻿using System.Collections.Immutable;
 using System.ComponentModel;
-using RestService.Configurations;
-using RestService.Data;
-using RestService.DatabaseDriver;
-using RestService.DataMapper;
-using RestService.Endpoint;
-using RestService.Queries;
+using QuizAPI.Configurations;
+using QuizAPI.DatabaseDriver;
+using QuizAPI.DataMapper;
+using QuizAPI.Data;
+using QuizAPI.Database.Sqlite;
+using QuizAPI.Endpoint;
+using QuizAPI.Queries;
 
-namespace RestService;
+namespace QuizAPI;
 
 public static class Services
 {
     public static void InitServices(WebApplicationBuilder builder)
     {
-        InitDatabase(builder, DatabaseType.Sqlite);
+        InitDatabase(builder);
         InitDataMapper(builder);
         InitQueries(builder);
         InitEndpoints(builder);
     }
 
-    private static void InitDatabase(WebApplicationBuilder builder, DatabaseType database)
+    private static void InitDatabase(WebApplicationBuilder builder)
     {
-        switch (database)
-        {
-            case DatabaseType.MSSQL: InitMSSQL(builder); break;
-            case DatabaseType.Sqlite: InitSqlite(builder); break;
-            default: throw new InvalidEnumArgumentException();
-        }
-    }
-
-    private static void InitMSSQL(WebApplicationBuilder builder)
-    {
-        InitDatabaseConfiguration(builder, "./Configurations/MSSQLConfiguration.json");
-        builder.Services.AddSingleton<IDatabaseDriver, MSSQLDriver>();
-    }
-
-    private static void InitSqlite(WebApplicationBuilder builder)
-    {
-        InitDatabaseConfiguration(builder, "./Configurations/SqliteConfiguration.json");
-        builder.Services.AddSingleton<IDatabaseDriver, SqliteDriver>();
+        InitDatabaseConfiguration(builder, "./Database/Sqlite/SqliteConfiguration.json");
+        builder.Services.AddTransient<IDatabaseDriver, SqliteDriver>();
     }
 
     private static void InitDatabaseConfiguration(WebApplicationBuilder builder, string path)
@@ -53,16 +38,21 @@ public static class Services
     {
         builder.Services.AddSingleton<IDataMapper<User>, UserMapper>();
         builder.Services.AddSingleton<IDataMapper<bool>, BooleanMapper>();
+        builder.Services.AddSingleton<IDataMapper<string>, StringMapper>();
+        builder.Services.AddSingleton<IDataMapper<Question>, QuestionMapper>();
     }
     
     private static void InitQueries(WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<GetAllUsersQuery>();
         builder.Services.AddSingleton<AuthenticationQuery>();
+        builder.Services.AddSingleton<QuestionQuery>();
     }
 
     private static void InitEndpoints(WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<UserEndpoint>();
+        builder.Services.AddSingleton<AuthenticationEndpoint>();
+        builder.Services.AddSingleton<QuestionEndpoint>();
     }
 }

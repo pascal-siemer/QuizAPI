@@ -1,4 +1,4 @@
-﻿namespace RestService.Endpoint;
+﻿namespace QuizAPI.Endpoint;
 
 public interface IEndpoint<TArguments, TResult>
 {

@@ -1,4 +1,4 @@
-namespace RestService.Configurations;
+namespace QuizAPI.Configurations;
 
 public class DatabaseConfiguration: IDatabaseConfiguration
 {

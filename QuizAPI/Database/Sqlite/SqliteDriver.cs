@@ -1,8 +1,9 @@
 using Microsoft.Data.Sqlite;
-using RestService.Configurations;
-using RestService.DataMapper;
+using QuizAPI.Configurations;
+using QuizAPI.DatabaseDriver;
+using QuizAPI.DataMapper;
 
-namespace RestService.DatabaseDriver;
+namespace QuizAPI.Database.Sqlite;
 
 public class SqliteDriver: IDatabaseDriver, IDisposable, IAsyncDisposable
 {
@@ -13,11 +14,11 @@ public class SqliteDriver: IDatabaseDriver, IDisposable, IAsyncDisposable
         _connection = new(configuration.ConnectionString);
     }
     
-    public async IAsyncEnumerable<TResult> Read<TArguments, TResult>(string query, TArguments arguments, IDataMapper<TResult> dataMapper)
+    public async IAsyncEnumerable<TResult> Read<TResult>(string query, IEnumerable<SqliteParameter>? parameters, IDataMapper<TResult> dataMapper)
     {
         await _connection.OpenAsync();
 
-        var reader = await CreateReaderAsync(query);
+        var reader = await ExecuteReaderAsync(query, parameters);
 
         while (await reader.ReadAsync())
         {
@@ -27,21 +28,19 @@ public class SqliteDriver: IDatabaseDriver, IDisposable, IAsyncDisposable
         await _connection.CloseAsync();
     }
 
-    private Task<SqliteDataReader> CreateReaderAsync(string query, IEnumerable<SqliteParameter> parameters)
+    private Task<SqliteDataReader> ExecuteReaderAsync(string query, IEnumerable<SqliteParameter>? parameters)
     {
         var command = _connection.CreateCommand();
         command.CommandText = query;
-        command.Parameters.AddRange(parameters);
+        
+        if (parameters is not null) {
+            command.Parameters.AddRange(parameters);
+        }
         return command.ExecuteReaderAsync();
     }
 
-    public void Dispose()
-    {
-        _connection.Dispose();
-    }
+    public void Dispose() => _connection.Dispose();
 
-    public ValueTask DisposeAsync()
-    {
-        return _connection.DisposeAsync();
-    }
+    public ValueTask DisposeAsync() =>_connection.DisposeAsync();
+
 }

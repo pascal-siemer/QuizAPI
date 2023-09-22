@@ -1,3 +1,3 @@
 namespace QuizAPI.Arguments;
 
-public record IdentifierArguments();
+public record IdentifierArguments(int Identifier);

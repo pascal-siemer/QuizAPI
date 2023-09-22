@@ -1,9 +1,9 @@
-﻿using System.Data.SqlClient;
-using RestService.DataMapper;
+﻿using Microsoft.Data.Sqlite;
+using QuizAPI.DataMapper;
 
-namespace RestService.DatabaseDriver;
+namespace QuizAPI.DatabaseDriver;
 
 public interface IDatabaseDriver
 {
-    public IAsyncEnumerable<TResult> Read<TResult>(string query, SqlParameter parameter, IDataMapper<TResult> dataMapper);
+    public IAsyncEnumerable<TResult> Read<TResult>(string query, IEnumerable<SqliteParameter>? parameters, IDataMapper<TResult> dataMapper);
 }

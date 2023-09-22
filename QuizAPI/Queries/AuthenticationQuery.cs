@@ -1,11 +1,10 @@
 using Microsoft.Data.Sqlite;
-using RestService.Configurations;
-using RestService.Data;
-using RestService.DatabaseDriver;
-using RestService.DataMapper;
-using RestService.Endpoint.Arguments;
+using QuizAPI.Arguments;
+using QuizAPI.Configurations;
+using QuizAPI.DatabaseDriver;
+using QuizAPI.DataMapper;
 
-namespace RestService.Queries;
+namespace QuizAPI.Queries;
 
 public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
 {
@@ -25,13 +24,13 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
         _query = $"""
             SELECT EXISTS (
                 SELECT [ID], [Username]
-                FROM [main].[Users], (
+                FROM {configuration.Schema}.[Users], (
                     SELECT
                         'pascal' as _username,
                         'test' as _password
                 ) 
-                WHERE Username = _username
-                  and Password = _password
+                WHERE Username = $Username
+                  and Password = $Password
             );
             """;
     }
@@ -39,7 +38,10 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
 
     public async Task<bool> Execute(AuthenticationArguments arguments)
     {
-        await foreach (var entry in _driver.Read(_query, arguments, _mapper))
+
+        var parameters = CreateParameters(arguments);
+        
+        await foreach (var entry in _driver.Read(_query, parameters, _mapper))
         {
             if (entry is not true)
             {
@@ -51,4 +53,11 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
 
         return false;
     }
+    
+    private IEnumerable<SqliteParameter> CreateParameters(AuthenticationArguments arguments) => new List<SqliteParameter>
+    {
+        new ("Username", arguments.Username),
+        new ("Password", arguments.Password)
+    };
+    
 }
