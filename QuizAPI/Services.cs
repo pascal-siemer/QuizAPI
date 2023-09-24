@@ -1,9 +1,10 @@
 ﻿using System.Collections.Immutable;
 using System.ComponentModel;
 using QuizAPI.Configurations;
-using QuizAPI.DatabaseDriver;
 using QuizAPI.DataMapper;
 using QuizAPI.Data;
+using QuizAPI.Database.Interfaces;
+using QuizAPI.Database.Postgres;
 using QuizAPI.Database.Sqlite;
 using QuizAPI.Endpoint;
 using QuizAPI.Queries;
@@ -22,8 +23,8 @@ public static class Services
 
     private static void InitDatabase(WebApplicationBuilder builder)
     {
-        InitDatabaseConfiguration(builder, "./Database/Sqlite/SqliteConfiguration.json");
-        builder.Services.AddTransient<IDatabaseDriver, SqliteDriver>();
+        InitDatabaseConfiguration(builder, "./Database/Postgres/PostgresConfiguration.json");
+        builder.Services.AddTransient<IDatabaseDriver, PostgresDriver>();
     }
 
     private static void InitDatabaseConfiguration(WebApplicationBuilder builder, string path)

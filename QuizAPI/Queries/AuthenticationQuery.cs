@@ -1,7 +1,8 @@
 using Microsoft.Data.Sqlite;
+using Npgsql;
 using QuizAPI.Arguments;
 using QuizAPI.Configurations;
-using QuizAPI.DatabaseDriver;
+using QuizAPI.Database.Interfaces;
 using QuizAPI.DataMapper;
 
 namespace QuizAPI.Queries;
@@ -22,15 +23,11 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
         _configuration = configuration;
         _mapper = mapper;
         _query = $"""
-            SELECT EXISTS (
-                SELECT [ID], [Username]
-                FROM {configuration.Schema}.[Users], (
-                    SELECT
-                        'pascal' as _username,
-                        'test' as _password
-                ) 
-                WHERE Username = $Username
-                  and Password = $Password
+            select exists (
+                select id, username
+            from {configuration.Schema}.users
+            where username = @username
+              and password_hash = @password_hash
             );
             """;
     }
@@ -38,7 +35,6 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
 
     public async Task<bool> Execute(AuthenticationArguments arguments)
     {
-
         var parameters = CreateParameters(arguments);
         
         await foreach (var entry in _driver.Read(_query, parameters, _mapper))
@@ -48,16 +44,19 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
                 continue;
             }
 
+            await _driver.Cancel();
+
             return true;
         }
 
         return false;
     }
-    
-    private IEnumerable<SqliteParameter> CreateParameters(AuthenticationArguments arguments) => new List<SqliteParameter>
-    {
-        new ("Username", arguments.Username),
-        new ("Password", arguments.Password)
-    };
-    
+
+    private IEnumerable<NpgsqlParameter> CreateParameters(AuthenticationArguments arguments) =>
+        new List<NpgsqlParameter>
+        {
+            new("username", arguments.Username),
+            new("password_hash", arguments.Password)
+        };
+
 }

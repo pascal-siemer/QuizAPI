@@ -1,7 +1,7 @@
 using QuizAPI.Arguments;
 using QuizAPI.Configurations;
 using QuizAPI.Data;
-using QuizAPI.DatabaseDriver;
+using QuizAPI.Database.Interfaces;
 using QuizAPI.DataMapper;
 
 namespace QuizAPI.Queries;
@@ -20,8 +20,12 @@ public class GetAllUsersQuery : IQuery<NoArguments, User[]>
         _configuration = configuration;
         _mapper = mapper;
         _query = $"""
-            SELECT [ID], [Username], [Password]
-            FROM {configuration.Schema}.[Users]
+            select 
+                id,
+                username,
+                password_hash
+            from 
+                {configuration.Schema}.users
             """;
     }
     

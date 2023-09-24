@@ -4,8 +4,7 @@ namespace QuizAPI.Data;
 
 public record Question
 {
-
-    [JsonPropertyName("identifier")]
+    [JsonPropertyName("id")]
     public int Identifier { get; init; }
     
     [JsonPropertyName("prompt")]
@@ -15,17 +14,17 @@ public record Question
     public string Answer { get; init; }
     
     [JsonPropertyName("choices")]
-    public List<string> Choices { get; init; }
+    public List<Choice> Choices { get; init; }
     
-    public Question(int Identifier, string Prompt, string Answer, List<string> Choices)
+    public Question(int identifier, string prompt, string answer, List<Choice> choices)
     {
-        this.Identifier = Identifier;
-        this.Prompt = Prompt;
-        this.Answer = Answer;
-        this.Choices = Choices;
+        this.Identifier = identifier;
+        this.Prompt = prompt;
+        this.Answer = answer;
+        this.Choices = choices;
     }
 
-    public void Deconstruct(out int Identifier, out string Prompt, out string Answer, out List<string> Choices)
+    public void Deconstruct(out int Identifier, out string Prompt, out string Answer, out List<Choice> Choices)
     {
         Identifier = this.Identifier;
         Prompt = this.Prompt;

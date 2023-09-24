@@ -1,0 +1,4 @@
+{
+  "ConnectionString": "Host=localhost; Database=Quiz; Username=sa; Password=Pa$$w0rd; Pooling=false;",
+  "Schema": "public"
+}

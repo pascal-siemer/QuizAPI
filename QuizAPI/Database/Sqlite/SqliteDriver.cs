@@ -1,11 +1,11 @@
 using Microsoft.Data.Sqlite;
 using QuizAPI.Configurations;
-using QuizAPI.DatabaseDriver;
+using QuizAPI.Database.Interfaces;
 using QuizAPI.DataMapper;
 
 namespace QuizAPI.Database.Sqlite;
 
-public class SqliteDriver: IDatabaseDriver, IDisposable, IAsyncDisposable
+public class SqliteDriver: IDisposable, IAsyncDisposable //IDatabaseDriver
 {
     private SqliteConnection _connection;
 
@@ -30,8 +30,7 @@ public class SqliteDriver: IDatabaseDriver, IDisposable, IAsyncDisposable
 
     private Task<SqliteDataReader> ExecuteReaderAsync(string query, IEnumerable<SqliteParameter>? parameters)
     {
-        var command = _connection.CreateCommand();
-        command.CommandText = query;
+        var command = new SqliteCommand(query, _connection);
         
         if (parameters is not null) {
             command.Parameters.AddRange(parameters);

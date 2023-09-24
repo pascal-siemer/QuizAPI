@@ -1,9 +1,11 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using Npgsql;
 using QuizAPI.DataMapper;
 
-namespace QuizAPI.DatabaseDriver;
+namespace QuizAPI.Database.Interfaces;
 
 public interface IDatabaseDriver
 {
-    public IAsyncEnumerable<TResult> Read<TResult>(string query, IEnumerable<SqliteParameter>? parameters, IDataMapper<TResult> dataMapper);
+    public IAsyncEnumerable<TResult> Read<TResult>(string query, IEnumerable<NpgsqlParameter>? parameters, IDataMapper<TResult> dataMapper);
+
+    public Task Cancel();
 }
