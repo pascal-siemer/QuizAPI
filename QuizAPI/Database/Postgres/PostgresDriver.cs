@@ -25,15 +25,18 @@ public class PostgresDriver : IDatabaseDriver
 
     private NpgsqlConnection _connection;
 
-    public PostgresDriver(IDatabaseConfiguration configuration)
+    public PostgresDriver(NpgsqlDataSource dataSource)
     {
-        _connection = new(configuration.ConnectionString);
+        _connection = dataSource.CreateConnection();
     }
     
     
     
-    public async IAsyncEnumerable<TResult> Read<TResult>(string query, IEnumerable<NpgsqlParameter>? parameters, IDataMapper<TResult> dataMapper)
-    {
+    public async IAsyncEnumerable<TResult> Read<TResult>(
+        string query,
+        IEnumerable<NpgsqlParameter>? parameters,
+        IDataMapper<TResult> dataMapper
+    ) {
         await _connection.OpenAsync();
 
         var reader = await ExecuteReaderAsync(query, parameters);

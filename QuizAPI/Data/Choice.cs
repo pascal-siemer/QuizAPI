@@ -4,7 +4,7 @@ namespace QuizAPI.Data;
 
 public record Choice
 {
-    [JsonPropertyName("id")]
+    [JsonPropertyName("identifier")]
     public int Identifier { get; init; }
     
     [JsonPropertyName("title")]

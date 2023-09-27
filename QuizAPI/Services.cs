@@ -1,11 +1,9 @@
-﻿using System.Collections.Immutable;
-using System.ComponentModel;
+﻿using Npgsql;
 using QuizAPI.Configurations;
 using QuizAPI.DataMapper;
 using QuizAPI.Data;
 using QuizAPI.Database.Interfaces;
 using QuizAPI.Database.Postgres;
-using QuizAPI.Database.Sqlite;
 using QuizAPI.Endpoint;
 using QuizAPI.Queries;
 
@@ -33,6 +31,11 @@ public static class Services
         builder.Configuration.AddJsonFile(path).Build();
         builder.Configuration.Bind(configuration);
         builder.Services.AddSingleton<IDatabaseConfiguration>(configuration);
+
+        var dataSourceBuilder = new NpgsqlDataSourceBuilder(configuration.ConnectionString);
+        dataSourceBuilder.MapComposite<Choice>("choice");
+        dataSourceBuilder.MapComposite<Question>("question");
+        builder.Services.AddSingleton<NpgsqlDataSource>(dataSourceBuilder.Build());
     }
 
     private static void InitDataMapper(WebApplicationBuilder builder)

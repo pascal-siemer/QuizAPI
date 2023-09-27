@@ -1,8 +1,9 @@
 using System.Data;
+using QuizAPI.Extensions;
 
 namespace QuizAPI.DataMapper;
 
 public class BooleanMapper : IDataMapper<bool>
 {
-    public bool Map(IDataRecord data) => data.GetBoolean(0);
+    public bool Map(IDataRecord data) => data.Get<bool>("result");
 }

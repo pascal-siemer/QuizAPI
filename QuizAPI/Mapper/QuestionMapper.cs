@@ -2,6 +2,7 @@ using System.Data;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using QuizAPI.Data;
+using QuizAPI.Extensions;
 
 namespace QuizAPI.DataMapper;
 
@@ -16,7 +17,6 @@ public class QuestionMapper : IDataMapper<Question>
 
     public Question Map(IDataRecord data)
     {
-        var json = data.GetString(0);
-        return JsonSerializer.Deserialize<Question>(json);
+        return  data.Get<Question>("question");
     }
 }

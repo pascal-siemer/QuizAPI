@@ -22,14 +22,7 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
         _driver = driver;
         _configuration = configuration;
         _mapper = mapper;
-        _query = $"""
-            select exists (
-                select id, username
-            from {configuration.Schema}.users
-            where username = @username
-              and password_hash = @password_hash
-            );
-            """;
+        _query = "select authenticate(@username, @password_hash) as result";
     }
 
 
@@ -52,11 +45,9 @@ public class AuthenticationQuery : IQuery<AuthenticationArguments, bool>
         return false;
     }
 
-    private IEnumerable<NpgsqlParameter> CreateParameters(AuthenticationArguments arguments) =>
-        new List<NpgsqlParameter>
-        {
-            new("username", arguments.Username),
-            new("password_hash", arguments.Password)
-        };
-
+    private IEnumerable<NpgsqlParameter> CreateParameters(AuthenticationArguments arguments)
+    {
+        yield return new("username", arguments.Username);
+        yield return new("password_hash", arguments.Password);
+    }
 }

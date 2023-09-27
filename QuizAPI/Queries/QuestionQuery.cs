@@ -26,7 +26,7 @@ public class QuestionQuery: IQuery<IdentifierArguments, Question?>
         _configuration = configuration;
         _choiceMapper = choiceMapper;
         _questionMapper = questionMapper;
-        _query = "select row_to_json(get_question(@id))";
+        _query = "select get_question(@id) as question;";
     }
 
     public async Task<Question?> Execute(IdentifierArguments arguments)
