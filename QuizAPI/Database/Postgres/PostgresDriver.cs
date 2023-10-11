@@ -21,6 +21,10 @@ public class PostgresDriver : IDatabaseDriver
      - Cancel()-Methode implementieren, die bei Early Returns aufgerufen werden muss.
      - Daten aus dem Reader in eine Liste zusammenfassen, aber weitere verarbeitung yielden
      
+     // https://www.npgsql.org/doc/types/enums_and_composites.html?tabs=datasource
+     // https://www.youtube.com/watch?v=qw--VYLpxG4
+     
+     
      */
 
     private NpgsqlConnection _connection;
