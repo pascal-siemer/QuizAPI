@@ -11,12 +11,14 @@ namespace QuizAPI;
 
 public static class Services
 {
-    public static void InitServices(WebApplicationBuilder builder)
+    public static WebApplicationBuilder RegisterServices(this WebApplicationBuilder builder)
     {
         InitDatabase(builder);
         InitDataMapper(builder);
         InitQueries(builder);
         InitEndpoints(builder);
+
+        return builder;
     }
 
     private static void InitDatabase(WebApplicationBuilder builder)
